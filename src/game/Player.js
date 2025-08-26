@@ -12,6 +12,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     this.stateMachine = new StateMachine("idle");
     this.stateMachine.addState("idle", new IdleState());
     this.stateMachine.addState("moving", new MovingState());
+    this.stateMachine.addState("running", new RunningState());
     this.stateMachine.changeState("idle", { player: this });
 
     this.scene.add.existing(this); // Agrega el sprite a la escena
@@ -39,6 +40,10 @@ class IdleState extends State {
       cursors.down.isDown
     ) {
       this.player.stateMachine.changeState("moving", { player: this.player });
+    }
+
+    if (cursors.shift.isDown) {
+      this.player.stateMachine.changeState("running", { player: this.player });
     }
   }
   finish() {
@@ -88,5 +93,48 @@ class MovingState extends State {
     // FX: Quita tint al salir de moving
     this.player.clearTint();
     console.log("Exiting Moving State");
+  }
+}
+
+class RunningState extends State {
+  init(params) {
+    this.player = params.player;
+    // FX: Tint rojo al entrar en running
+    this.player.setTint(0xff3333);
+    console.log("Entering Running State");
+  }
+  update(dt) {
+    this.handleInput(dt);
+    // Si no se presiona ninguna tecla, vuelve a idle
+    const cursors = this.player.cursors;
+    if (
+      !cursors.left.isDown &&
+      !cursors.right.isDown &&
+      !cursors.up.isDown &&
+      !cursors.down.isDown
+    ) {
+      this.player.stateMachine.changeState("idle", { player: this.player });
+    }
+  }
+  handleInput(dt) {
+    const cursors = this.player.cursors;
+    const speed = 400 * dt;
+    if (cursors.left.isDown) {
+      this.player.x -= speed;
+    }
+    if (cursors.right.isDown) {
+      this.player.x += speed;
+    }
+    if (cursors.up.isDown) {
+      this.player.y -= speed;
+    }
+    if (cursors.down.isDown) {
+      this.player.y += speed;
+    }
+  }
+  finish() {
+    // FX: Quita tint al salir de running
+    this.player.clearTint();
+    console.log("Exiting Running State");
   }
 }
