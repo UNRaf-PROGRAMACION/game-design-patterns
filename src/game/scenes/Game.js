@@ -1,5 +1,6 @@
 import { Scene } from "phaser";
 import { Player } from "../Player.js";
+import GameManager from "../GameManager.js";
 
 export class Game extends Scene {
   constructor() {
@@ -24,6 +25,14 @@ export class Game extends Scene {
     this.currentCycle = "create";
     this.add.image(512, 384, "background");
     this.player = new Player(this, 512, 350, "logo");
+
+    this.gameManager = GameManager.getInstance();
+    console.log("Player Lives:", this.gameManager.getPlayerLives());
+    this.gameManager.setPlayerLives(5);
+    console.log(
+      "Player Lives After Setting:",
+      this.gameManager.getPlayerLives()
+    );
   }
 
   update(t, dt) {
