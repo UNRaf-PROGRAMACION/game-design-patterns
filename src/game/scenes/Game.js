@@ -1,6 +1,7 @@
 import { Scene } from "phaser";
 import { Player } from "../Player.js";
 import GameManager from "../GameManager.js";
+import Enemy from "../Enemy.js";
 
 export class Game extends Scene {
   constructor() {
@@ -27,11 +28,34 @@ export class Game extends Scene {
     this.player = new Player(this, 512, 350, "logo");
 
     this.gameManager = GameManager.getInstance();
-    console.log("Player Lives:", this.gameManager.getPlayerLives());
-    this.gameManager.setPlayerLives(5);
-    console.log(
-      "Player Lives After Setting:",
-      this.gameManager.getPlayerLives()
+    this.enemy = new Enemy(this);
+
+    // Disparar varias balas desde posiciones válidas cada 1500 ms
+    this.time.addEvent({
+      delay: 1500,
+      callback: () => {
+        if (this.enemy) {
+          const randomSpeedX = Phaser.Math.Between(0, this.enemy.bulletSpeed);
+          const randomSpeedY = this.enemy.bulletSpeed;
+          this.enemy.shootFrom(0, 0, randomSpeedX, randomSpeedY);
+        }
+      },
+      loop: true,
+    });
+
+    this.physics.add.collider(
+      this.player,
+      this.enemy.bullets,
+      (player, bullet) => {
+        bullet.deactivate();
+        this.player.body.setVelocity(0);
+
+        this.gameManager.losePlayerLife();
+        console.log(
+          "Player Lives After Hit:",
+          this.gameManager.getPlayerLives()
+        );
+      }
     );
   }
 

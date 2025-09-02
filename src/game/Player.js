@@ -6,6 +6,8 @@ export class Player extends Phaser.GameObjects.Sprite {
   constructor(scene, x, y, key) {
     super(scene, x, y, key);
     this.scene = scene;
+    this.scene.physics.add.existing(this);
+    this.body.setCollideWorldBounds(true);
 
     this.cursors = this.scene.input.keyboard.createCursorKeys();
 
