@@ -1,4 +1,5 @@
 import { Game as MainGame } from "./scenes/Game";
+import { HUD } from "./scenes/HUD.js";
 import { AUTO, Scale, Game } from "phaser";
 
 // Find out more information about the Game Config at:
@@ -20,7 +21,7 @@ const config = {
       debug: false,
     },
   },
-  scene: [MainGame],
+  scene: [MainGame, HUD],
 };
 
 const StartGame = (parent) => {

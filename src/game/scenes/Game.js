@@ -55,8 +55,15 @@ export class Game extends Scene {
           "Player Lives After Hit:",
           this.gameManager.getPlayerLives()
         );
+
+        this.events.emit("livesChanged", {
+          lives: this.gameManager.getPlayerLives(),
+        });
       }
     );
+
+    // Lanzar HUD
+    this.scene.launch("HUD");
   }
 
   update(t, dt) {
